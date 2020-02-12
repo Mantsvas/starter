@@ -7,6 +7,8 @@
 
 require('./bootstrap');
 
+var Inputmask = require('inputmask');
+
 window.Vue = require('vue');
 
 /**
@@ -20,3 +22,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue'))
 const app = new Vue({
     el: '#app'
 });
+
+$(window).on('load', function () {
+    Inputmask({"placeholder": "", regex: "^[0-9]{1,12}([,.][0-9]{1,2})?$"}).mask(".numericMask");
+  });
