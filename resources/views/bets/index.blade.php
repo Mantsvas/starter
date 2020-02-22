@@ -1,6 +1,5 @@
 @extends('layouts.app')
 
-@auth
     @section('charts')
         @if($betChartByMonth)
             {!! $betChartByMonth->script() !!}
@@ -28,4 +27,3 @@
         @include('addBet')
 
     @endsection
-@endauth
