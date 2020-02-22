@@ -32,7 +32,17 @@ class BetController extends Controller
                 'betChart'          => $betChart->winningsChart(),
             ]);
         } else {
-            return view('bets.index');
+            return view('bets.index', [
+                'bets'              => Bet::where('user_id', 3)->orderBy('date', 'desc')->paginate(50),
+                'platforms'         => Platform::pluck('title', 'id'),
+                'betsCount'         => Bet::where('user_id', 3)->count(),
+                'totalBetsSum'      => Bet::where('user_id', 3)->sum('bet_sum'),
+                'totalWinnings'     => Bet::where('user_id', 3)->where('status', 'won')->sum('bet_sum') - Bet::where('user_id', 3)->where('status', 'lost')->sum('bet_sum'),
+                'winBetsCount'      => Bet::where(['user_id' => 3, 'status' => 'won'])->count(),
+                'lostBetsCount'     => Bet::where(['user_id' => 3, 'status' => 'lost'])->count(),
+                'betChartByMonth'   => $betChart->winningsChartByMonth(),
+                'betChart'          => $betChart->winningsChart(),
+            ]);
         }
     }
 
@@ -49,7 +59,7 @@ class BetController extends Controller
         $bet = new Bet;
         $bet->fill($request->all());
         $bet->date = Carbon::parse($request->get('date'));
-        $bet->user_id = Auth::user()->id;
+        $bet->user_id = Auth::user() ? Auth::user()->id : 1;
         $bet->save();
 
         return redirect()->route('bets.index');
@@ -67,7 +77,7 @@ class BetController extends Controller
     public function update(Request $request, Bet $bet)
     {
         $bet->fill($request->all());
-        $bet->user_id = Auth::user()->id;
+        $bet->user_id = Auth::user() ? Auth::user()->id : 3;
         $bet->winnings = $request->get('bet_sum') * $request->get('rate');
         $bet->save();
 
@@ -83,9 +93,9 @@ class BetController extends Controller
 
     public function win(Bet $bet)
     {
-        if ($bet->user_id != Auth::user()->id) {
-            return redirect()->back()->with('alert-danger', 'Tai ne jūsų statymas!');
-        }
+        // if ($bet->user_id != Auth::user()->id) {
+        //     return redirect()->back()->with('alert-danger', 'Tai ne jūsų statymas!');
+        // }
 
         $bet->winnings = $bet->bet_sum * $bet->rate - $bet->bet_sum;
         $bet->status = 'won';
@@ -96,9 +106,9 @@ class BetController extends Controller
 
     public function lost(Bet $bet)
     {
-        if ($bet->user_id != Auth::user()->id) {
-            return redirect()->back()->with('alert-danger', 'Tai ne jūsų statymas!');
-        }
+        // if ($bet->user_id != Auth::user()->id) {
+        //     return redirect()->back()->with('alert-danger', 'Tai ne jūsų statymas!');
+        // }
 
         $bet->winnings = 0 - $bet->bet_sum;
         $bet->status = 'lost';
