@@ -33,13 +33,13 @@ class BetController extends Controller
             ]);
         } else {
             return view('bets.index', [
-                'bets'              => Bet::where('user_id', 3)->orderBy('date', 'desc')->paginate(50),
+                'bets'              => Bet::where('user_id', 1)->orderBy('date', 'desc')->paginate(50),
                 'platforms'         => Platform::pluck('title', 'id'),
-                'betsCount'         => Bet::where('user_id', 3)->count(),
-                'totalBetsSum'      => Bet::where('user_id', 3)->sum('bet_sum'),
-                'totalWinnings'     => Bet::where('user_id', 3)->where('status', 'won')->sum('bet_sum') - Bet::where('user_id', 3)->where('status', 'lost')->sum('bet_sum'),
-                'winBetsCount'      => Bet::where(['user_id' => 3, 'status' => 'won'])->count(),
-                'lostBetsCount'     => Bet::where(['user_id' => 3, 'status' => 'lost'])->count(),
+                'betsCount'         => Bet::where('user_id', 1)->count(),
+                'totalBetsSum'      => Bet::where('user_id', 1)->sum('bet_sum'),
+                'totalWinnings'     => Bet::where('user_id', 1)->where('status', 'won')->sum('bet_sum') - Bet::where('user_id', 1)->where('status', 'lost')->sum('bet_sum'),
+                'winBetsCount'      => Bet::where(['user_id' => 1, 'status' => 'won'])->count(),
+                'lostBetsCount'     => Bet::where(['user_id' => 1, 'status' => 'lost'])->count(),
                 'betChartByMonth'   => $betChart->winningsChartByMonth(),
                 'betChart'          => $betChart->winningsChart(),
             ]);
@@ -77,7 +77,7 @@ class BetController extends Controller
     public function update(Request $request, Bet $bet)
     {
         $bet->fill($request->all());
-        $bet->user_id = Auth::user() ? Auth::user()->id : 3;
+        $bet->user_id = Auth::user() ? Auth::user()->id : 1;
         $bet->winnings = $request->get('bet_sum') * $request->get('rate');
         $bet->save();
 

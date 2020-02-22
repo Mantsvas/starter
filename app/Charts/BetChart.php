@@ -40,7 +40,7 @@ class BetChart extends Chart
         $currentMonth = Carbon::now()->endOfMonth();
         $startDate = Carbon::now()->subYear()->addMonth()->startOfMonth();
 
-        $winnings = Bet::where('user_id', 3)
+        $winnings = Bet::where('user_id', 1)
                             ->where('status', '!=', 'waiting')
                             ->where('date', '>=', $startDate->format('Y-m-d'))
                             ->where('date', '<=', $currentMonth->format('Y-m-d'))
@@ -70,7 +70,7 @@ class BetChart extends Chart
         $currentMonth = Carbon::now()->endOfMonth();
         $startDate = Carbon::now()->subYear()->addMonth()->startOfMonth();
 
-        $winnings = Bet::where('user_id', 3)
+        $winnings = Bet::where('user_id', 1)
                             ->where('status', '!=', 'waiting')
                             ->where('date', '>=', $startDate->format('Y-m-d'))
                             ->where('date', '<=', $currentMonth->format('Y-m-d'))
