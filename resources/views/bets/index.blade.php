@@ -1,28 +1,31 @@
 @extends('layouts.app')
 
-@section('charts')
-    @if($betChartByMonth)
-        {!! $betChartByMonth->script() !!}
-    @endif
-    @if($betChart)
-        {!! $betChart->script() !!}
-    @endif
-@endsection
+@auth
+    @section('charts')
+        @if($betChartByMonth)
+            {!! $betChartByMonth->script() !!}
+        @endif
+        @if($betChart)
+            {!! $betChart->script() !!}
+        @endif
+        
+    @endsection
 
-@section('content')
+    @section('content')
 
-    <div class="row">
-        <div class="col-12 col-md-8 offset-md-2">
-            @include('bets.statistics')
+        <div class="row">
+            <div class="col-12 col-md-8 offset-md-2">
+                @include('bets.statistics')
+            </div>
+        </div>    
+
+        <div class="row">
+            <div class="col-12 col-md-8 offset-md-2">
+                @include('bets.table', ['bets' => $bets])
+            </div>
         </div>
-    </div>    
 
-    <div class="row">
-        <div class="col-12 col-md-8 offset-md-2">
-            @include('bets.table', ['bets' => $bets])
-        </div>
-    </div>
+        @include('addBet')
 
-    @include('addBet')
-
-@endsection
+    @endsection
+@endauth

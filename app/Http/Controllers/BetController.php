@@ -19,17 +19,21 @@ class BetController extends Controller
 
     public function index(BetChart $betChart)
     {
-        return view('bets.index', [
-            'bets'              => Bet::where('user_id', Auth::user()->id)->orderBy('date', 'desc')->paginate(50),
-            'platforms'         => Platform::pluck('title', 'id'),
-            'betsCount'         => Bet::where('user_id', Auth::user()->id)->count(),
-            'totalBetsSum'      => Bet::where('user_id', Auth::user()->id)->sum('bet_sum'),
-            'totalWinnings'     => Bet::where('user_id', Auth::user()->id)->where('status', 'won')->sum('bet_sum') - Bet::where('user_id', Auth::user()->id)->where('status', 'lost')->sum('bet_sum'),
-            'winBetsCount'      => Bet::where(['user_id' => Auth::user()->id, 'status' => 'won'])->count(),
-            'lostBetsCount'     => Bet::where(['user_id' => Auth::user()->id, 'status' => 'lost'])->count(),
-            'betChartByMonth'   => $betChart->winningsChartByMonth(),
-            'betChart'          => $betChart->winningsChart(),
-        ]);
+        if (Auth::user()) {
+            return view('bets.index', [
+                'bets'              => Bet::where('user_id', Auth::user()->id)->orderBy('date', 'desc')->paginate(50),
+                'platforms'         => Platform::pluck('title', 'id'),
+                'betsCount'         => Bet::where('user_id', Auth::user()->id)->count(),
+                'totalBetsSum'      => Bet::where('user_id', Auth::user()->id)->sum('bet_sum'),
+                'totalWinnings'     => Bet::where('user_id', Auth::user()->id)->where('status', 'won')->sum('bet_sum') - Bet::where('user_id', Auth::user()->id)->where('status', 'lost')->sum('bet_sum'),
+                'winBetsCount'      => Bet::where(['user_id' => Auth::user()->id, 'status' => 'won'])->count(),
+                'lostBetsCount'     => Bet::where(['user_id' => Auth::user()->id, 'status' => 'lost'])->count(),
+                'betChartByMonth'   => $betChart->winningsChartByMonth(),
+                'betChart'          => $betChart->winningsChart(),
+            ]);
+        } else {
+            return view('bets.index');
+        }
     }
 
     public function create()
